@@ -29,7 +29,7 @@ namespace Task31
             Console.WriteLine("Среднее арифметическое элементов: " + twoD.countAverage(colomnsN, linesM));
             Console.WriteLine("Массив, в котором элементы четных строк напечатаны в обратном порядке: ");
             twoD.PrintArrBackw(colomnsN, linesM);
-
+            //одномерные
             Console.WriteLine("Одномерные  массивы");
             Console.WriteLine("Введите количество элементов.");
             int ElementsNumber = int.Parse(Console.ReadLine());
@@ -45,52 +45,33 @@ namespace Task31
             }
             OneDimentionArr oneD = new OneDimentionArr(ElementsNumber, WayInpArr1D);
             oneD.OneDimentionArrINP(ElementsNumber, WayInpArr1D);
-            //double x = oneD.countAverage(ElementsNumber);
             Console.WriteLine("Среднее арифметическое элементов: " + oneD.countAverage(ElementsNumber));
             Console.WriteLine("Массив, из которого удалили элементы, большие 100 по модулю: " + oneD.DeleteMoreThan100(ElementsNumber));
             Console.WriteLine("Массив, из которого удалили повторяющиеся элементы: " + oneD.DeleteTheRepeating(ElementsNumber));
-
+            //ступенчатые
             Console.WriteLine("Ступенчатые  массивы");
             bool WayInpStepped;
             Console.WriteLine("Хотите сами ввести массив? + = да, - = нет");
             if (Console.ReadLine() == "+")
             {
-                WayInpArr2D = true;
+                WayInpStepped= true;
             }
             else
             {
-                WayInpArr2D = false;
+                WayInpStepped = false;
             }
             Console.WriteLine("Введите количество строк");
-            int lineM = int.Parse(Console.ReadLine());
-            for(int i = 0;i<lineM;i++){
-                Console.WriteLine("Сколько элементов в строке номер"+lineM+"?");
-            }
-            
-           
-            Console.WriteLine("Введите количество элементов в строке.");
             int colN = int.Parse(Console.ReadLine());
-            
-            bool WayInpArr2D;
-            Console.WriteLine("Хотите сами ввести массив? + = да, - = нет");
-            if (Console.ReadLine() == "+")
-            {
-                WayInpArr2D = true;
-            }
-            else
-            {
-                WayInpArr2D = false;
-            }
-            TwoDimentionArr twoD = new TwoDimentionArr(colomnsN, linesM);
-            twoD.TwoDimentionArrINP(WayInpArr2D, colomnsN, linesM);
+            SteppedArray st = new SteppedArray(colN);
+            st.SteppedINP(WayInpStepped, colN);
             Console.WriteLine("Массив: ");
-            twoD.TwoDimentionArrOUTPUT(colomnsN,linesM);
-            Console.WriteLine("Среднее арифметическое элементов: " + twoD.countAverage(colomnsN, linesM));
-            Console.WriteLine("Массив, в котором элементы четных строк напечатаны в обратном порядке: ");
-            twoD.PrintArrBackw(colomnsN, linesM);
-
-            
-
+            st.SteppedOUTPUT(colN);
+            Console.WriteLine("Среднее арифметическое элементов: " + st.countAverage(colomnsN));
+            Console.WriteLine("Средние арифметические строк массива");
+            st.AverageInEveryStepped (colN);
+            Console.WriteLine("Массив, в котором четные по значению элементы массива заменены на произведения их индексов");
+            st.ChangeInd(colN);
+            st.SteppedOUTPUT(colN);
         }
     }
 
@@ -281,23 +262,24 @@ namespace Task31
     class SteppedArray
     {
         public int colN, lineN;
-        public int[,] array;
+        public int[][]array;
         Random rnd = new Random();
         public bool WayOfInputtingTheArray = false;
-        public SteppedArray(int colsN, int lineM)
+        public SteppedArray(int colsN)
         {
-            array = new int[colN, lineM];
+            int[][]array=new int [colN][];
         }
 
-        public void SteppedINP(bool WayOfInputtingTheArray, int colN, int lineM)
+        public void SteppedINP(bool WayOfInputtingTheArray, int colN)
         {
             if (WayOfInputtingTheArray == false)
             {
                 for (int i = 0; i < colN; i++)
                 {
+                    lineM  = Console.ReadLine();
                     for (int j = 0; j < lineM; j++)
                     {
-                        array[i, j] = rnd.Next(-100,100);
+                        array[i][j] = rnd.Next(-100,100);
                     }
 
                 }
@@ -306,59 +288,77 @@ namespace Task31
             {
                 for (int i = 0; i < colN; i++)
                 {
+                    lineM  = Console.ReadLine();
                     for (int j = 0; j < lineM; j++)
                     {
-                        array[i, j] = int.Parse(Console.ReadLine());
+                        array[i][j] = int.Parse(Console.ReadLine());
                     }
-
                 }
             }
-
         }
         
-        public int countAverage(int colN, int lineM)
+        public int countAverage(int colN)
         {
             int m = 0;
+            int num =0;
             for (int i = 0; i < colN; i++)
             {
+                int lineM = array[i].Length;
                 for (int j = 0; j < lineM; j++)
                 {
-                    m += array[i, j];
+                    m += array[i][j];
+                    num++;
                 }
             }
-            return m / (colN * lineM);
+            return m /num;
         }
         
-        static void ChangeInd (int colN, int lineM)
+        public void ChangeInd (int colN)
         {
             for (int i = 0; i < colN; i++)
 	        {   
+                int lineM = array[i].Length();
     	        for (int j = 0; j < lineM; j++)
     	        {
-    	            if (array[i,j] % 2 == 0)
+    	            if (array[i][j] % 2 == 0)
     		        {
-    		            array[i,j] = i * j;
+    		            array[i][j] = i * j;
     		        }
     	        }
 
 	        }
         }
-        static void AveraeInEveryStepped (int colN, int lineM)
+        public void AverageInEveryStepped (int colN)
         {
             for (int i = 0; i < colN; i++)
 	        {   
+                int num = 0;
+                int sum = 0;
+                int lineM = array[i].Length();
     	        for (int j = 0; j <  lineM; j++)
     	        {
-    	            if (array[i,j] % 2 == 0)
-    		        {
-    		            array[i,j] = i * j;
-    		        }
+    	            num++;
+                    sum+=array[i][j];
     	        }
+                Console.WriteLine(sum/num);
 
 	        }
+        }
+
+        public void SteppedOUTPUT(int colN)
+        {
+            for (int i = 0; i < colN; i++)
+            {
+                int lineM = array[i].Length();
+                for (int j = 0; j < linesM; j++)
+                {
+                    Console.Write(array[i][j] + " ");
+                }
+                Console.WriteLine();
+
+            }
         }
 
     }
     
 }
-
